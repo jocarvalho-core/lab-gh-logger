@@ -102,7 +102,7 @@ jobs:
       - name: 🤖 Triagem com IA
         run: |
           # Junta todos os JSONs num único report para a IA
-          cat ./failures/**/*.json > final_report.json
+          cat ./failures/**/*.json >> final_report.json
           cat final_report.json
           # Aqui você chama a sua API de IA (ex: OpenAI, Google Gemini, etc)
           # Passando o conteúdo de final_report.json como contexto

@@ -30,9 +30,9 @@ if [ $EXIT_CODE -ne 0 ]; then
     # Usamos uma estrutura simples de append para ser rápido em Shell
     echo "{\"step\": \"$STEP_NAME\", \"duration\": \"${DURATION}s\", \"exit_code\": $EXIT_CODE, \"command\": \"$CMD_CLEAN\", \"log\": \"$LOG_TAIL\"}" >> "$JSON_LOG"
 
-    echo "------------JSON PARA IA---------------------"
+    echo "------------JSON PARA IA--------------------"
     cat $JSON_LOG
-    echo "------------JSON PARA IA---------------------"
+    echo "------------JSON PARA IA--------------------"
 else
     echo "🔚 FIM: $STEP_NAME (SUCESSO em ${DURATION}s)"
 fi

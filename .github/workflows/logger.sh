@@ -22,24 +22,16 @@ echo "::endgroup::"
 
 if [ $EXIT_CODE -ne 0 ]; then
     echo "🔚 FIM: $STEP_NAME (FALHOU em ${DURATION}s)"
-    # Captura as últimas 50 linhas para não estourar o contexto da IA
-    LOG_TAIL=$(tail -n 50 /tmp/step_output.log | sed 's/"/\\"/g' | sed ':a;N;$!ba;s/\n/\\n/g')
+    
+    LOG_TAIL=$(tail -n 10 /tmp/step_output.log | sed 's/"/\\"/g' | sed ':a;N;$!ba;s/\n/\\n/g')
     CMD_CLEAN=$(cat "$COMMAND_FILE" | sed 's/"/\\"/g' | sed ':a;N;$!ba;s/\n/\\n/g')
 
     # Cria ou anexa ao arquivo JSON de falha
     # Usamos uma estrutura simples de append para ser rápido em Shell
     echo "{\"step\": \"$STEP_NAME\", \"duration\": \"${DURATION}s\", \"exit_code\": $EXIT_CODE, \"command\": \"$CMD_CLEAN\", \"log\": \"$LOG_TAIL\"}" >> "$JSON_LOG"
 
-    echo "---------------------------------------------"
-    echo "-------------LOG OUTPUT TEMP-----------------"
-   
-    cat /tmp/step_output.log
-    
-    echo "-------------LOG OUTPUT TEMP-----------------"
-    echo "---------------------------------------------"
-
     echo "------------JSON PARA IA---------------------"
-    echo $JSON_LOG
+    cat $JSON_LOG
     echo "------------JSON PARA IA---------------------"
 else
     echo "🔚 FIM: $STEP_NAME (SUCESSO em ${DURATION}s)"

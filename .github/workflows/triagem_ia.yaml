@@ -36,8 +36,8 @@ jobs:
   mend-scan:
     runs-on: ubuntu-latest
     defaults:
-    run:
-      shell: bash .github/scripts/logger.sh {0}
+      run:
+        shell: bash .github/scripts/logger.sh {0}
 
     steps:
       - uses: actions/checkout@v4
@@ -52,8 +52,8 @@ jobs:
   acs-app-scan:
     runs-on: ubuntu-latest
     defaults:
-    run:
-      shell: bash .github/scripts/logger.sh {0}    
+      run:
+        shell: bash .github/scripts/logger.sh {0}    
     steps:
       - uses: actions/checkout@v4
       - uses: ./.github/actions/setup-logger    

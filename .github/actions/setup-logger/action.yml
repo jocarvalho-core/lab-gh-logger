@@ -6,7 +6,7 @@ runs:
       shell: bash
       run: |
         mkdir -p .github/scripts
-        curl -sSfL "https://raw.githubusercontent.com/jocarvalho/lazyconnection/refs/heads/master/.github/workflows/logger.sh" -o .github/scripts/logger.sh
+        curl -sSfL "https://raw.githubusercontent.com/jocarvalho-core/lab-gh-logger/refs/heads/main/.github/workflows/logger.sh" -o .github/scripts/logger.sh
         chmod +x .github/scripts/logger.sh
         # Garante que o arquivo JSON de contexto comece vazio
         echo "" > /tmp/ai_failure_context.json

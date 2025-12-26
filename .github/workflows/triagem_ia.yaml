@@ -104,10 +104,6 @@ jobs:
           path: ./failures
           pattern: ai-context-*
 
-      - name: 🔍 Validar e Resumir
-        run: |
-          # O jq agora consegue ler tudo sem erros de parse
-          jq -r '.[] | "🚨 Job: \(.job) | Step: \(.step) (Erro: \(.exit_code))"' final_report.json
 
       - name: 🤖 Triagem com IA
         run: |
@@ -120,6 +116,11 @@ jobs:
           echo "Enviando report para IA..."
           # curl -X POST https://sua-api-ia.com/triage -d @final_report.json
           
+      - name: 🔍 Validar e Resumir
+        run: |
+          # O jq agora consegue ler tudo sem erros de parse
+          jq -r '.[] | "🚨 Job: \(.job) | Step: \(.step) (Erro: \(.exit_code))"' final_report.json
+    
       - name: Upload do arquivo final enviado para analise com IA
         uses: actions/upload-artifact@v4
         with:

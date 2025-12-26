@@ -20,9 +20,9 @@ jobs:
     steps:
       - uses: actions/checkout@v4
       - uses: ./.github/actions/setup-logger
-      - name: "Análise Estática Fortify"
+      - name: "Analise Estatica Fortify"
         env:
-          GITHUB_STEP_NAME: "Análise Estática Fortify"
+          GITHUB_STEP_NAME: "Analise Estatica Fortify"
         run: ./.github/scripts/ffy/run-fortify.sh
 
       # Se falhar, faz upload do JSON de contexto desta máquina
@@ -65,6 +65,8 @@ jobs:
       - uses: actions/checkout@v4
       - uses: ./.github/actions/setup-logger    
       - name: Acs-scan
+        env:
+          GITHUB_STEP_NAME: acs-app-scan
         run: |
           echo "[ACS-APP] Inicializando Scanner de Segurança de Aplicação..."
           echo "[ACS-APP] Target: image-registry.local/myapp:latest"

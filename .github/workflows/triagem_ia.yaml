@@ -107,7 +107,7 @@ jobs:
       - name: 🤖 Triagem com IA
         run: |
           # Junta todos os JSONs num único report para a IA
-          ls ./failures
+          find . -type f
           cat ./failures/**/*.json
           cat ./failures/**/*.json > final_report.json
           cat final_report.json

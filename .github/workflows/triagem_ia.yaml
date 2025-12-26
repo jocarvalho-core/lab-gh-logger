@@ -104,23 +104,10 @@ jobs:
           path: ./failures
           pattern: ai-context-*
 
-      - name: ✅ Validar JSONs
+      - name: 🔍 Validar e Resumir
         run: |
-          echo "Iniciando validação dos artefatos..."
-          
-          # Encontra todos os arquivos JSON e valida um por um
-          for f in $(find ./failures -name "*.json"); do
-            echo "Checando: $f"
-            if jq empty "$f" > /dev/null 2>&1; then
-              echo "✅ $f é um JSON válido."
-              # Mostra um resumo do que foi capturado
-              jq -r '"Step: \(.step) | Duração: \(.duration)"' "$f"
-            else
-              echo "❌ ERRO: $f contém JSON inválido!"
-              cat "$f" # Mostra o conteúdo para debug
-              exit 1
-            fi
-          done
+          # O jq agora consegue ler tudo sem erros de parse
+          jq -r '.[] | "🚨 Job: \(.job) | Step: \(.step) (Erro: \(.exit_code))"' final_report.json
 
       - name: 🤖 Triagem com IA
         run: |
@@ -132,6 +119,7 @@ jobs:
           # Passando o conteúdo de final_report.json como contexto
           echo "Enviando report para IA..."
           # curl -X POST https://sua-api-ia.com/triage -d @final_report.json
+          
       - name: Upload do arquivo final enviado para analise com IA
         uses: actions/upload-artifact@v4
         with:

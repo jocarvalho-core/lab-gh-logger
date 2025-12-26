@@ -104,6 +104,24 @@ jobs:
           path: ./failures
           pattern: ai-context-*
 
+      - name: ✅ Validar JSONs
+        run: |
+          echo "Iniciando validação dos artefatos..."
+          
+          # Encontra todos os arquivos JSON e valida um por um
+          for f in $(find ./failures -name "*.json"); do
+            echo "Checando: $f"
+            if jq empty "$f" > /dev/null 2>&1; then
+              echo "✅ $f é um JSON válido."
+              # Mostra um resumo do que foi capturado
+              jq -r '"Step: \(.step) | Duração: \(.duration)"' "$f"
+            else
+              echo "❌ ERRO: $f contém JSON inválido!"
+              cat "$f" # Mostra o conteúdo para debug
+              exit 1
+            fi
+          done
+
       - name: 🤖 Triagem com IA
         run: |
           # Junta todos os JSONs num único report para a IA

@@ -20,9 +20,9 @@ jobs:
     steps:
       - uses: actions/checkout@v4
       - uses: ./.github/actions/setup-logger
-      - name: "Analise Estatica Fortify"
+      - name: Analise Estatica Fortify
         env:
-          GITHUB_STEP_NAME: "Analise Estatica Fortify"
+          GITHUB_STEP_NAME: Analise-Estatica-Fortify
         run: ./.github/scripts/ffy/run-fortify.sh
 
       # Se falhar, faz upload do JSON de contexto desta máquina

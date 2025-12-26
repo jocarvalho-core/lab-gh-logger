@@ -132,3 +132,9 @@ jobs:
           # Passando o conteúdo de final_report.json como contexto
           echo "Enviando report para IA..."
           # curl -X POST https://sua-api-ia.com/triage -d @final_report.json
+      - name: Upload do arquivo final enviado para analise com IA
+        if: failure()
+        uses: actions/upload-artifact@v4
+        with:
+          name: ai-context-final
+          path: final_report.json

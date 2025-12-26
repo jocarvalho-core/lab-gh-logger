@@ -1,16 +1,5 @@
 name: Triagem com IA
-on:
-  workflow_dispatch:
-    inputs:
-      build-deploy:
-        description: "O que deseja fazer?"
-        required: false
-        default: Somente Build
-        type: choice
-        options:
-          - Somente Build
-          - Build + Deploy
-          - Atualizacao values.yaml
+on: push
 jobs:
   fortify-scan:
     runs-on: ubuntu-latest
@@ -118,7 +107,9 @@ jobs:
       - name: 🤖 Triagem com IA
         run: |
           # Junta todos os JSONs num único report para a IA
-          cat ./failures/**/*.json >> final_report.json
+          ls ./failures
+          cat ./failures/**/*.json
+          cat ./failures/**/*.json > final_report.json
           cat final_report.json
           # Aqui você chama a sua API de IA (ex: OpenAI, Google Gemini, etc)
           # Passando o conteúdo de final_report.json como contexto

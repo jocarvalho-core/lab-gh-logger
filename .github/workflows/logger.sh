@@ -23,9 +23,9 @@ echo "::endgroup::"
 if [ $EXIT_CODE -ne 0 ]; then
     echo "🔚 FIM: $STEP_NAME (FALHOU em ${DURATION}s)"
     
-    LOG_TAIL=$(tail -n 50 /tmp/step_output.log | tr -d '\r' | sed 's/"/\\"/g' | sed ':a;N;$!ba;s/\n/\\n/g')
+    LOG_TAIL=$(tail -n 20 /tmp/step_output.log | tr -d '\r' | sed 's/"/\\"/g' | sed ':a;N;$!ba;s/\n/\\n/g')
 
-    CMD_CLEAN=$(cat "$COMMAND_FILE" | tr -d '\r' | sed 's/"/\\"/g' | sed ':a;N;$!ba;s/\n/\\n/g')
+    CMD_CLEAN=$(cat "$COMMAND_FILE" | tr -d '\r' | sed 's/"/\\"/g' | sed ':a;N;$!ba;s/\n/\\n/g' | sed 's/\x1b\[[0-9;]*m//g')
 
     echo "{\"step\": \"$STEP_NAME\", \"duration\": \"${DURATION}s\", \"exit_code\": $EXIT_CODE, \"command\": \"$CMD_CLEAN\", \"log\": \"$LOG_TAIL\"}" >> "$JSON_LOG"
 

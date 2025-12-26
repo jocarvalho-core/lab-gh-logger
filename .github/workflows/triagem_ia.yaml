@@ -93,7 +93,7 @@ jobs:
           path: /tmp/ai_failure_context.json
 
   
-  ai-triage:
+  ai-triagem:
     needs: [fortify-scan, mend-scan, acs-app-scan]
     if: failure()
     runs-on: ubuntu-latest

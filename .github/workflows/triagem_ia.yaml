@@ -48,6 +48,13 @@ jobs:
         run: |
           echo "Iniciando scan..."
           sleep 2
+      - name: Upload Contexto para IA
+        if: failure()
+        uses: actions/upload-artifact@v4
+        with:
+          name: ai-context-mend-scan
+          path: /tmp/ai_failure_context.json
+
 
   acs-app-scan:
     runs-on: ubuntu-latest
@@ -86,6 +93,13 @@ jobs:
 
           # Finaliza com erro 1 para o logger.sh capturar
           exit 1
+      
+      - name: Upload Contexto para IA
+        if: failure()
+        uses: actions/upload-artifact@v4
+        with:
+          name: ai-context-acs-appscan
+          path: /tmp/ai_failure_context.json
 
   
   ai-triage:

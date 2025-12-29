@@ -22,12 +22,9 @@ echo "::endgroup::"
 if [ $EXIT_CODE -ne 0 ]; then
     echo "🔚 FIM: $STEP_NAME (FALHOU em ${DURATION}s)"
 
-    # Captura os dados brutos (o jq cuidará do escape das aspas e quebras de linha)
-    LOG_RAW=$(tail -n 50 /tmp/step_output.log | tr -d '\r')
+    LOG_RAW=$(tail -n 10 /tmp/step_output.log | tr -d '\r')
     CMD_RAW=$(cat "$COMMAND_FILE" | tr -d '\r')
 
-    # Monta o JSON de forma segura usando o próprio jq
-    # --arg cria variáveis internas no jq que são automaticamente "escapadas"
     jq -n \
       --arg job "$JOB_NAME" \
       --arg step "$STEP_NAME" \

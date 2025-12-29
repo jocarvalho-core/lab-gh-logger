@@ -2,7 +2,7 @@ name: 'Setup AI Logger'
 runs:
   using: "composite"
   steps:
-    - name: 📥 Download e Init
+    - name: Download and init context file
       shell: bash
       run: |
         mkdir -p .github/scripts

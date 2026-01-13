@@ -21,7 +21,16 @@ jobs:
         with:
           name: ai-context-fortify
           path: /tmp/ai_failure_context.json
-
+  trivy-scan:
+    runs-on: ubuntu-latest
+    steps:
+    - name: Run Trivy vulnerability scanner
+      uses: aquasecurity/trivy-action@master
+      with:
+        scan-type: 'fs'
+        format: 'table'
+        exit-code: '1' # Faz o pipeline falhar se achar algo grave
+        severity: 'CRITICAL,HIGH'
   mend-scan:
     runs-on: ubuntu-latest
     defaults:

@@ -5,6 +5,7 @@ var mongo = require('mongodb').MongoClient, connection=null;
 
 module.exports = {
 		lazyConnection : function(url, callback) {
+			console.log(url)
 		if (this.connection) {
 			console.log("cached connection")
 			callback(this.connection)

@@ -1,0 +1,111 @@
+name: Workflow SLV
+
+on:
+  push:
+    branches:
+      - slv-dv/*
+      - slv-ho/*
+    paths-ignore:
+      - '.github/workflows/**'
+jobs:
+  fortify-scan:
+    runs-on: ubuntu-latest
+    defaults:
+      run:
+        shell: bash .github/scripts/logger.sh {0}
+    steps:
+      - uses: actions/checkout@v4
+      - uses: ./.github/actions/setup-logger
+      - name: Analise Estatica Fortify
+        env:
+          GITHUB_STEP_NAME: Analise-Fortify
+        run: ./.github/scripts/ffy/run-fortify.sh
+
+      # Se falhar, faz upload do JSON de contexto desta máquina
+      - name: Upload Contexto para IA
+        if: failure()
+        uses: actions/upload-artifact@v4
+        with:
+          name: ai-context-fortify
+          path: /tmp/ai_failure_context.json
+  trivy-scan:
+    runs-on: ubuntu-latest
+    steps:
+    - uses: actions/checkout@v4
+    - name: Run Trivy vulnerability scanner
+      uses: aquasecurity/trivy-action@master
+      with:
+        scan-type: 'fs'
+        format: 'table'
+        exit-code: '1' # Faz o pipeline falhar se achar algo grave
+        severity: 'CRITICAL,HIGH,MEDIUM'
+  mend-scan:
+    runs-on: ubuntu-latest
+    defaults:
+      run:
+        shell: bash .github/scripts/logger.sh {0}
+
+    steps:
+      - uses: actions/checkout@v4
+      - uses: ./.github/actions/setup-logger    
+      - name: Security-scan
+        env:
+          GITHUB_STEP_NAME: Mend-scan
+        run: |
+          echo "Iniciando scan..."
+          sleep 2
+      - name: Upload Contexto para IA
+        if: failure()
+        uses: actions/upload-artifact@v4
+        with:
+          name: ai-context-mend-scan
+          path: /tmp/ai_failure_context.json
+
+
+  acs-app-scan:
+    runs-on: ubuntu-latest
+    defaults:
+      run:
+        shell: bash .github/scripts/logger.sh {0}    
+    steps:
+      - uses: actions/checkout@v4
+      - uses: ./.github/actions/setup-logger    
+      - name: Acs-scan
+        env:
+          GITHUB_STEP_NAME: acs-app-scan
+        run: |
+          echo "[ACS-APP] Inicializando Scanner de Segurança de Aplicação..."
+          echo "[ACS-APP] Target: image-registry.local/myapp:latest"
+          echo "[ACS-APP] Carregando políticas: 'Corporate-Strict-Standard'..."
+          sleep 1
+          
+          echo "[ACS-APP] Passo 1/3: Analisando camadas da imagem (Image Layers)..."
+          echo "  -> Layer 1: OK (OS updates applied)"
+          echo "  -> Layer 2: OK (No credentials found)"
+          sleep 1.5
+          
+          echo "[ACS-APP] Passo 2/3: Escaneando dependências do runtime (package.json)..."
+          echo "  -> Encontrados 142 pacotes."
+          sleep 2
+          
+          echo "------------------------------------------------------------"
+          echo "❌ FALHA DE CONFORMIDADE DETECTADA"
+          echo "------------------------------------------------------------"
+          echo "[CRITICAL] Vulnerabilidade de alta severidade encontrada no pacote: 'axios'"
+          echo "[CVE-ID] CVE-2023-45853"
+          echo "[DESCRIPTION] Axios 1.5.1 vulnerable to Server-Side Request Forgery (SSRF)."
+          echo "[POLICY] O job foi interrompido porque a política 'Strict' proíbe CVEs High/Critical."
+          echo "------------------------------------------------------------"
+          echo "[SUGESTÃO] Atualize o pacote 'axios' para a versão 1.6.0 ou superior."
+          echo "------------------------------------------------------------"
+
+          # Finaliza com erro 1 para o logger.sh capturar
+          exit 1
+      
+      - name: Upload Contexto para IA
+        if: failure()
+        uses: actions/upload-artifact@v4
+        with:
+          name: ai-context-acs-appscan
+          path: /tmp/ai_failure_context.json
+
